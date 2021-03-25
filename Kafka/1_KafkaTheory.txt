@@ -1,0 +1,76 @@
+1.) Kafka Introduction
+* Producers and Consumers
+* Highly scalable and low latency (Real Time)
+* Uses: Messaging, Stream processing, IOT devices
+* Realtime decisions and insights
+* It is a "Transport Mechanism"
+
+2.) Kafka Theory:
+Topics - a particular stream of data
+  defined by name
+  Split into partitons, 0 indexed
+  Each message w/in a partition gets an incremental id called "offset"
+  Offsets only have meaning and order within context of a partition
+  Partition is kindof like a file...
+  Data is kept for fixed period of time (default 1 week)
+  Data immutable (cannot be changed)
+
+Topic Example: "one topic for all trucks"
+truck_gps
+
+Broker - server
+  Kafka cluster is composed of multiple brokers (server)
+  Broker identified by ID (integer)
+  Each broker contains cdertain topic partitions
+  Good default to start is 3 brokers
+  Brokers contain certain partitions (like a file) of a topic
+
+Topic Replication (usually between 2-3, g with 3)
+  Allows redundancy so if a broker is down it is available on another
+  Leader - at anyu 1 time only 1 broker can be a leader, others are
+   passive replicas
+  ISR - in-sync replica, managed by Zookeeper via election
+
+Producers: write data to topics, automatically know which broker
+  partition to write to. Autmatically load balance round-robin style
+  Can choose to receive an ACK
+  ack=all No data loss
+  ack=1 (default) a bit of data loss possible
+  ack=0 possible data loss
+  
+Message Key: Specifys order, specifies to allways send to same partition
+
+Consumers:
+  Read data from a topic (specified by topic name)
+  Know which broker to read from
+  Data read In Order w/in each partition
+
+Consumer Group:
+  Basically a Java application
+  Usually as many Consumers as Partitions as maximum for consumers
+  Don't really want inactive consumers (execpt maybe backup)
+
+Consumer Offsets:
+  Kafka stores offsets at ahwich a consumer group has been reading
+  Offsets committed live in topic named __consumer_offsets
+  If consumer dies can pick up from where it left off
+  
+  3 Delivery Semantics:
+    At most once - offsets committed as soon as message received
+    At least once (prefered) - ofsetts commited after msg processed
+    Exactly once - only achieved via kafka streams API Kafka-to-kafka
+
+Broker Discovery:
+  Each broker is a "bootstrap server"
+  So you only need to connect to one broker
+  Each broker knows about ALL data, where to find it, not data itself
+  Initial broker knows which IP's have what Partitions (metadata)
+
+Zookeeper: manages brokers
+  leader elections for partitions
+  sends notifications to Kafka
+  leader (writes), followers (reads)
+
+Kafka Guarantees:
+  Messages appended to topic-partition in order they are sent
+  W/ Replication Factor N, can handle N-1 failures

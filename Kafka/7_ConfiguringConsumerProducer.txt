@@ -1,0 +1,10 @@
+Configuring Producers and Consumers
+Client Configurations
+
+There exist a lot of options to:
+
+    configure producer: https://kafka.apache.org/documentation/#producerconfigs
+
+    configure consumers:  https://kafka.apache.org/documentation/#consumerconfigs
+
+The most important options are discussed in the real-world project section, coming next
